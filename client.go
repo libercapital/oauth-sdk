@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"gitlab.com/bavatech/architecture/software/libs/go-modules/bavalogs.git"
+	liberlogger "github.com/libercapital/liber-logger-go"
 	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 )
 
@@ -65,14 +65,14 @@ func NewClient(config Config) (cli Client, err error) {
 		config.ContentType = ContentTypeApplicationJson
 	}
 
-	redactKeys := append(bavalogs.DefaultKeys, config.RedactKeys...)
+	redactKeys := append(liberlogger.DefaultKeys, config.RedactKeys...)
 	return &client{
 		Config: config,
 		Mutex:  &sync.Mutex{},
 		JWT:    nil,
 		http: httptrace.WrapClient(
 			&http.Client{
-				Transport: bavalogs.HttpClient{
+				Transport: liberlogger.HttpClient{
 					Proxied: &http.Transport{
 						TLSClientConfig: tls,
 					},

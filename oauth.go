@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"time"
 
-	"gitlab.com/bavatech/architecture/software/libs/go-modules/bavalogs.git"
+	liberlogger "github.com/libercapital/liber-logger-go"
 )
 
 type requestClient interface {
@@ -97,10 +97,10 @@ func (c *client) GetAccessToken(ctx context.Context) (*JWT, error) {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 	if c.JWT != nil && c.JWT.Time.UnixNano() > time.Now().Add(time.Second*time.Duration(c.Config.ExpirationMarginSeconds)).UnixNano() {
-		bavalogs.Debug(ctx).Msg("token active, returning")
+		liberlogger.Debug(ctx).Msg("token active, returning")
 		return c.JWT, nil
 	}
 
-	bavalogs.Debug(ctx).Msg("token expired, creating new token")
+	liberlogger.Debug(ctx).Msg("token expired, creating new token")
 	return c.createAccessToken(ctx)
 }

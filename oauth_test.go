@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	helpersgo "github.com/libercapital/helpers-go"
 	"github.com/stretchr/testify/assert"
-	bavahelper "gitlab.com/bavatech/architecture/software/libs/go-modules/bava-helper.git"
 )
 
 func Test_client_GetAccessToken(t *testing.T) {
@@ -157,7 +157,7 @@ func Test_client_GetAccessToken(t *testing.T) {
 
 		{
 			name: "success existent token",
-			want: &JWT{AccessToken: bavahelper.PtrAny("abc"), Time: expireIn},
+			want: &JWT{AccessToken: helpersgo.PtrAny("abc"), Time: expireIn},
 			fields: fields{
 				Config: Config{
 					URL:          "http://localhost:1000",
@@ -167,7 +167,7 @@ func Test_client_GetAccessToken(t *testing.T) {
 					Audience:     "AUDIENCE",
 				},
 				Mutex: &sync.Mutex{},
-				JWT:   &JWT{AccessToken: bavahelper.PtrAny("abc"), Time: expireIn},
+				JWT:   &JWT{AccessToken: helpersgo.PtrAny("abc"), Time: expireIn},
 				http: requestClientMock{
 					Responses: []mockResponse{
 						{
