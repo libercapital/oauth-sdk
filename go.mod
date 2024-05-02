@@ -1,4 +1,4 @@
-module github.com/libercapital/oauthsdk
+module github.com/libercapital/oauth-sdk
 
 go 1.22
 
