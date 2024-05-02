@@ -1,0 +1,42 @@
+image: golang:1.18-alpine
+
+stages:
+  - test
+  - release
+
+.modules_commom: &modules_commom
+  variables:
+    REPO_NAME: gitlab.com/bavatech/architecture/software/libs/go-modules/cercsdk
+  before_script:
+    - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+    - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+    - cd $GOPATH/src/$REPO_NAME
+    - export GO111MODULE=auto
+    - export GOPRIVATE=gitlab.com
+    - apk add --update --no-cache git
+    - apk add openssh-client
+    - apk add zip
+    - mkdir ~/.ssh
+    - |
+      echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      chmod 400 ~/.ssh/id_rsa
+    - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts && eval "$(ssh-agent)" && ssh-add ~/.ssh/id_rsa
+    - git config --global url.git@gitlab.com:.insteadOf https://gitlab.com/
+    - apk add --no-cache git build-base
+
+unit-test:
+  stage: test
+  <<: *modules_commom
+  script:
+    - go get ./...
+    - go test -v ./...  
+
+create_tag:
+  image: node:latest
+  stage: release
+  before_script:
+    - npm install -g semantic-release @semantic-release/gitlab
+  script:
+    - semantic-release
+  only:
+    - main
